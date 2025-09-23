@@ -4,8 +4,8 @@
 
 
 MyCustomCamera::MyCustomCamera() {
-    movementSpeed = 50.0f; // units per second
-    rotationSpeed = 0.05f;   // rads per second
+    movementSpeed = 100.0f; // units per second
+    rotationSpeed = 0.35f;   // rads per second
     position = glm::vec3(0, 0, 0);
     orientation = glm::quat(1, 0, 0, 0); // nothing
 
@@ -38,8 +38,8 @@ void MyCustomCamera::update(float deltaTime) {
     if (ofGetKeyPressed('k')) pitch(-rotationamt);
     if (ofGetKeyPressed('j')) yaw(rotationamt);
     if (ofGetKeyPressed('l')) yaw(-rotationamt);
-    if (ofGetKeyPressed('u')) roll(rotationamt);
-    if (ofGetKeyPressed('o')) roll(-rotationamt);
+    if (ofGetKeyPressed('o')) roll(rotationamt);
+    if (ofGetKeyPressed('u')) roll(-rotationamt);
     orientation = orientation / length(orientation); // normalize
 
     // need to set ofCamera parameters using internal position, orientation
@@ -52,41 +52,38 @@ void MyCustomCamera::update(float deltaTime) {
 // TODO: pitch, yaw, roll
 
 void MyCustomCamera::pitch(float amt) {
-    glm::quat change = glm::angleAxis(amt, glm::vec3(0,10,0));
-    orientation = change*orientation;
+    glm::quat change = glm::angleAxis(amt, getqSide());
+    orientation = glm::normalize(change * orientation);
 
 }
 
 
 void MyCustomCamera::yaw(float amt) {
-    //glm::vec3 silly = glm::vec3(ofRandom(10), ofRandom(10), ofRandom(10));
-	glm::quat change = glm::angleAxis(amt, glm::vec3(10, 0, 0));
-    orientation = orientation*change;
+	glm::quat change = glm::angleAxis(amt, getqUp());
+    orientation = glm::normalize(change * orientation);
     
 }
 
 
 void MyCustomCamera::roll(float amt) {
-    glm::vec3 silly = glm::vec3(ofRandom(10), ofRandom(10), ofRandom(10));
-	glm::quat change = glm::angleAxis(amt, glm::vec3(0, 0, 10));
-    orientation = change;
+	glm::quat change = glm::angleAxis(amt, getqForward());
+    orientation = glm::normalize(change * orientation);
 }
 
 glm::vec3 MyCustomCamera::getqForward() {
 
-
-    return ((-BASE_FORWARD)); // because we look down -z axis
+	return glm::rotate(orientation, -BASE_FORWARD);
 }
 
 
 glm::vec3 MyCustomCamera::getqSide() {
 
-    return BASE_SIDE;
+    return glm::rotate(orientation, BASE_SIDE);
 }
 
 
 glm::vec3 MyCustomCamera::getqUp() {
 
-    return BASE_UP;
+    return glm::rotate(orientation, BASE_UP);
 }
 
