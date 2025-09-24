@@ -1,30 +1,23 @@
 #include "ofApp.h"
 
+ofApp::~ofApp() {
+	delete ct;
+}
+
 //--------------------------------------------------------------
 void ofApp::setup(){
-	asteroids = 200;
-	for (int i = 0; i < asteroids; i++)
-	{
-		body[i].setPosition(
-			glm::vec3(
-				ofRandom(-800,800),
-				ofRandom(-800,800),
-				ofRandom(-800,800))); // random somwhere in space
-
-	}
+	ct = new Context();
+	ct->Setup();
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-	cam.update(0.016); // 60 fps
+	ct->Update();
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-	cam.begin();
-	for (int i = 0; i < asteroids; i++)
-		body[i].draw();
-	cam.end();
+	ct->draw();
 }
 
 //--------------------------------------------------------------

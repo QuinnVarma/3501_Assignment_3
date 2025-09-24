@@ -1,11 +1,14 @@
 #pragma once
 
 #include "ofMain.h"
-#include "MyCustomCamera.h"
+#include "Game/MyCustomCamera.h"
+#include "Game/Context.h"
 
 class ofApp : public ofBaseApp{
 
 	public:
+	~ofApp();
+
 		void setup();
 		void update();
 		void draw();
@@ -27,4 +30,5 @@ class ofApp : public ofBaseApp{
 		ofNode body[500];
 
 		MyCustomCamera cam;
+		Context * ct;
 };
