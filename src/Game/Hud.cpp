@@ -14,42 +14,29 @@ void Hud::customDraw(void) {
 	ofDrawBitmapStringHighlight("Lives: " + std::to_string(lives), 20, 20, ofColor::black, ofColor::white);
 	ofDrawBitmapStringHighlight("Beacons: " + std::to_string(beacons), 20, 40, ofColor::black, ofColor::white);
 
-	// get normalized vector from player to beacon
-	glm::vec3 worldDir = glm::normalize(nearestBeacon - playerPos);
-
-	// convert to camera space using quaternion rotation
-	glm::vec3 camSpaceDir = glm::rotate(glm::inverse(playerOrient), worldDir);
-
-	// get angle in radians from forward (-Z) to direction
-	float angleRad = atan2(camSpaceDir.x, -camSpaceDir.z);
-
-	// Calculate direction vector in screen space (Y up)
-	glm::vec2 dirOnScreen(sin(angleRad), -cos(angleRad)); // "up" is forward
-
 	float padding = 30.0f;
-	float w = ofGetWidth() - 2 * padding;
-	float h = ofGetHeight() - 2 * padding;
-	glm::vec2 center(ofGetWidth() / 2.0f, ofGetHeight() / 2.0f);
+	float w = ofGetWidth();
+	float h = ofGetHeight();
+	glm::vec2 center(w / 2.0f, h / 2.0f);
 
-	// --- Accurate visibility check using camera ---
-	// Replace 'camera' with your actual camera pointer/reference
+	// Transform beacon position to camera space
+	glm::vec3 camSpaceDir = glm::rotate(glm::inverse(camera->getOrientationQuat()), nearestBeacon - camera->getPosition());
+
+	// Project to screen direction (ignore Z)
+	glm::vec2 dirOnScreen(camSpaceDir.x, -camSpaceDir.y);
+
+	// Check if beacon is on screen
 	glm::vec3 beaconScreen = camera->worldToScreen(nearestBeacon);
-
 	bool beaconOnScreen =
-		beaconScreen.x >= padding && beaconScreen.x <= ofGetWidth() - padding &&
-		beaconScreen.y >= padding && beaconScreen.y <= ofGetHeight() - padding &&
-		beaconScreen.z < 1.0f; // z < 1 means in front of camera (OpenGL NDC)
+		beaconScreen.x >= padding && beaconScreen.x <= w - padding &&
+		beaconScreen.y >= padding && beaconScreen.y <= h - padding &&
+		beaconScreen.z < 1.0f;
 
-	if (!beaconOnScreen) {
-		glm::vec2 center(ofGetWidth() / 2.0f, ofGetHeight() / 2.0f);
-		glm::vec2 beacon2D(beaconScreen.x, beaconScreen.y);
-		glm::vec2 dir = beacon2D - center;
+	if (!beaconOnScreen && glm::length(dirOnScreen) > 1e-6f) {
+		glm::vec2 triPos = getEdgeIntersection(center, dirOnScreen, w, h, padding);
 
-		glm::vec2 triPos = getEdgeIntersection(center, dir, ofGetWidth(), ofGetHeight(), padding);
-
-		// Draw the triangle pointing toward the beacon
 		float triSize = 28.0f;
-		float angleRad = atan2(dir.x, -dir.y); // angle from up
+		float angleRad = atan2(dirOnScreen.x, -dirOnScreen.y);
 		ofPushMatrix();
 		ofTranslate(triPos);
 		ofRotateDeg(ofRadToDeg(angleRad));
