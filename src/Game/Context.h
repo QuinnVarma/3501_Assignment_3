@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "MyCustomCamera.h"
+#include "Hud.h"
 
 #include "GameObjects/Player.h"
 
@@ -32,6 +33,7 @@ private:
 	ofNode body[500];
 	
 	MyCustomCamera cam;
+	Hud hud;
 
 	// GameObjects
 

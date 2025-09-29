@@ -24,12 +24,21 @@ void Context::Setup(void) {
 
 void Context::customDraw(void) {
 	cam.begin();
+	ofSetColor(ofColor::white);
 	for (Asteroid * as : _asteroids)
 		as->draw();
+	// Draw point at origin for testing
+	ofSetColor(ofColor::blue);
+	ofDrawSphere({ 0,0,0 }, 5);
 	cam.end();
+	hud.customDraw();
 }
 
 void Context::Update(void) {
 	player->Update(this);
 	cam.Update(this);
+	hud.Update();
+	hud.playerPos = player->getPosition();
+	hud.playerOrient = player->getOrientationQuat();
+	hud.camera = &cam;
 }

@@ -79,6 +79,9 @@
     <ClCompile Include="src\Game\GameObjects\Collectable.cpp">
       <Filter>src\Game\GameObjects</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\Hud.cpp">
+      <Filter>src\Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -469,6 +472,9 @@
     </ClInclude>
     <ClInclude Include="src\Game\GameObjects\Collectable.h">
       <Filter>src\Game\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Hud.h">
+      <Filter>src\Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
