@@ -24,6 +24,8 @@ public:
 	void customDraw(void) override;
 	void Update(void);
 
+	Player * GetPlayer(void) { return player; }
+
 private:
 	int asteroids;
 
@@ -33,6 +35,7 @@ private:
 
 	// GameObjects
 
+	Player * player;
 	vector<Asteroid *> _asteroids;
 	vector<Robot *> _robots;
 	vector<Beacon *> _beacons;
