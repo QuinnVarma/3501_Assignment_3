@@ -4,11 +4,16 @@ Context::Context() {
 }
 
 Context::~Context() {
+
+	delete player;
+
 	for (Asteroid * as : _asteroids)
 		delete as;
 }
 
 void Context::Setup(void) {
+	player = new Player();
+
 	asteroids = 200;
 	for (int i = 0; i < asteroids; i++) {
 		Asteroid * as = new Asteroid();
@@ -25,5 +30,6 @@ void Context::customDraw(void) {
 }
 
 void Context::Update(void) {
-	cam.update(0.016);
+	player->Update(this);
+	cam.Update(this);
 }
