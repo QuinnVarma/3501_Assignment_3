@@ -12,6 +12,8 @@ Player::Player() {
 	BASE_SIDE = glm::vec3(1, 0, 0);
 	BASE_UP = glm::vec3(0, 1, 0);
 	BASE_FORWARD = glm::vec3(0, 0, 1); // don't need to store all three, note
+
+	setRadius(10);
 }
 
 

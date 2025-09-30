@@ -5,5 +5,10 @@
 
 class Beacon : public Collectable{
 
+	public:
+		Beacon();
+
+		void Update(Context * ct) override;
+		void customDraw(void) override;
     
 };

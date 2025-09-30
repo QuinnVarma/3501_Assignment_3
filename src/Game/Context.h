@@ -25,7 +25,14 @@ public:
 	void customDraw(void) override;
 	void Update(void);
 
+
+	//getters and setters
+	int GetScore(void) { return score; }
+	void SetScore(int new_score) { score = new_score; }
+
 	Player * GetPlayer(void) { return player; }
+
+	vector<Beacon *> getBeacons(void) { return _beacons; }
 
 private:
 	int asteroids;
@@ -34,6 +41,7 @@ private:
 	
 	MyCustomCamera cam;
 	Hud hud;
+	int score = 0;
 
 	// GameObjects
 

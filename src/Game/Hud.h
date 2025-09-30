@@ -1,7 +1,8 @@
 #pragma once
 #include "ofMain.h"
+#include "GameObject.h"
 
-class Hud : public ofNode
+class Hud : public GameObject
 {
 	public:
 		Hud();
@@ -9,7 +10,7 @@ class Hud : public ofNode
 
 		void Setup(void);
 		void customDraw(void) override;
-		void Update(void);
+		void Update(Context* ct) override;
 
 		int lives = 3;
 		int beacons = 5;

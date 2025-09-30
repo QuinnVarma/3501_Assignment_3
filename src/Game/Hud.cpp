@@ -1,4 +1,5 @@
 #include "Hud.h"
+#include "Context.h"
 
 Hud::Hud() {
 }
@@ -60,11 +61,29 @@ void Hud::customDraw(void) {
 			ofPoint(triSize * 0.6f, triSize * 0.6f)   // right
 		);
 		ofPopMatrix();
+		ofSetColor(ofColor::white);
 	}
 }
 
-void Hud::Update(void) {
+void Hud::Update(Context* ct) {
 	// Update lives and beacons from context
+	beacons = ct->getBeacons().size();
+
+
+	//getting closest beacon
+	GameObject * player = ct->GetPlayer();
+
+	if (ct->getBeacons().size() > 0) {
+		GameObject * closest_beacon = ct->getBeacons().back();
+		for (GameObject * beacon : ct->getBeacons()){
+			float min_dist = glm::length(player->getPosition() - closest_beacon->getPosition());
+			float new_dist = glm::length(player->getPosition() - beacon->getPosition());
+			if (new_dist < min_dist)
+				closest_beacon = beacon;
+
+		}
+		nearestBeacon = closest_beacon->getPosition();
+	}
 }
 
 glm::vec2 Hud::getEdgeIntersection(const glm::vec2& center, const glm::vec2& dir, float w, float h, float padding) {
