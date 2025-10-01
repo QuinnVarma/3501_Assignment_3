@@ -10,5 +10,8 @@ class Beacon : public Collectable{
 
 		void Update(Context * ct) override;
 		void customDraw(void) override;
-    
+		void setColor(const ofColor& c) { _color = c; }
+
+	private:
+		ofColor _color;
 };

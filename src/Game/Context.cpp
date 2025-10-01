@@ -27,6 +27,12 @@ void Context::Setup(void) {
 		_beacons.push_back(bc);
 	}
 
+	if (!_beacons.empty()) {
+		int idx = ofRandom(0, _beacons.size());
+		currentBeacon = _beacons[idx];
+		currentBeacon->setColor(ofColor::yellow);  // highlight
+	}
+
 	int robots = 10;
 	for (int i = 0; i < robots; i++) {
 		Robot* rb = new Robot(glm::vec3(ofRandom(-800, 800), ofRandom(-800, 800), ofRandom(-800, 800)));
@@ -117,10 +123,28 @@ void Context::Update(void) {
 		}
 	}
 
-	// --- Win condition ---
-	if (_beacons.empty()) {
-		state = GameState::Win;
-		ofLogNotice() << "YOU WIN!";
+	// --- Beacon collection (ONLY highlighted one) ---
+	if (currentBeacon && player->DoesCollide(currentBeacon)) {
+		currentBeacon->setRemove();
+		_beacons.erase(std::remove(_beacons.begin(), _beacons.end(), currentBeacon), _beacons.end());
+
+		if (!_beacons.empty()) {
+			int idx = ofRandom(0, (int)_beacons.size());
+			currentBeacon = _beacons[idx];
+			currentBeacon->setColor(ofColor::yellow);
+		}
+		else {
+			currentBeacon = nullptr;
+			state = GameState::Win;
+			ofLogNotice() << "YOU WIN!";
+		}
+	}
+
+	// --- Keep non-highlighted beacons white ---
+	for (Beacon* bc : _beacons) {
+		if (bc != currentBeacon) {
+			bc->setColor(ofColor::white);
+		}
 	}
 
 	cam.Update(this);

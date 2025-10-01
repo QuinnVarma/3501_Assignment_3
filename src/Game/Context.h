@@ -34,6 +34,7 @@ public:
 	vector<Beacon *> getBeacons(void) { return _beacons; }
 	
 	int GetLives() const { return lives; }
+	Beacon* getCurrentBeacon() const { return currentBeacon; }
 
 	enum class GameState {
 		Playing,
@@ -47,6 +48,7 @@ private:
 	uint64_t lastHitTime = 0;
 	const uint64_t hitCooldown = 5000; 
 	int beacons = 4;
+	Beacon* currentBeacon = nullptr;
 
 	ofNode body[500];
 	

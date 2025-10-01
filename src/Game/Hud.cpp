@@ -66,25 +66,22 @@ void Hud::customDraw(void) {
 }
 
 void Hud::Update(Context* ct) {
-	// Update lives and beacons from context
+	// Update lives and beacons count from context
 	beacons = ct->getBeacons().size();
 
+	// Keep track of player state
+	GameObject* player = ct->GetPlayer();
+	playerPos = player->getPosition();
+	playerOrient = player->getOrientationQuat();
 
-	//getting closest beacon
-	GameObject * player = ct->GetPlayer();
-
-	if (ct->getBeacons().size() > 0) {
-		GameObject * closest_beacon = ct->getBeacons().back();
-		for (GameObject * beacon : ct->getBeacons()){
-			float min_dist = glm::length(player->getPosition() - closest_beacon->getPosition());
-			float new_dist = glm::length(player->getPosition() - beacon->getPosition());
-			if (new_dist < min_dist)
-				closest_beacon = beacon;
-
-		}
-		nearestBeacon = closest_beacon->getPosition();
+	if (ct->getCurrentBeacon() != nullptr) {
+		nearestBeacon = ct->getCurrentBeacon()->getPosition();
+	}
+	else {
+		nearestBeacon = glm::vec3(0, 0, 0);
 	}
 }
+
 
 glm::vec2 Hud::getEdgeIntersection(const glm::vec2& center, const glm::vec2& dir, float w, float h, float padding) {
 	// Screen bounds
