@@ -21,8 +21,6 @@ void Context::Setup(void) {
 		_asteroids.push_back(as);
 	}
 
-
-	int beacons = 20;
 	for (int i = 0; i < beacons; i++) {
 		Beacon* bc = new Beacon();
 		bc->setPosition({ ofRandom(-800, 800), ofRandom(-800, 800), ofRandom(-800, 800) });
@@ -52,9 +50,25 @@ void Context::customDraw(void) {
 
 	cam.end();
 	hud.customDraw();
+
+	// --- Show win/lose messages ---
+	if (state == GameState::GameOver) {
+		ofSetColor(ofColor::red);
+		ofDrawBitmapString("GAME OVER", ofGetWidth() / 2 - 40, ofGetHeight() / 2);
+	}
+	else if (state == GameState::Win) {
+		ofSetColor(ofColor::green);
+		ofDrawBitmapString("YOU WIN!", ofGetWidth() / 2 - 40, ofGetHeight() / 2);
+	}
 }
 
 void Context::Update(void) {
+
+	if (state != GameState::Playing) {
+		// Freeze everything if game ended
+		return;
+	}
+
 	player->Update(this);
 
 	for (Beacon * bc : _beacons) {
@@ -93,11 +107,21 @@ void Context::Update(void) {
 		if (wasHit) {
 			lives--;
 			lastHitTime = now;
-			hud.lives = lives;   // update HUD
+			hud.lives = lives;
 			ofLogNotice() << "Player hit! Lives left: " << lives;
+
+			if (lives <= 0) {
+				state = GameState::GameOver;
+				ofLogNotice() << "GAME OVER!";
+			}
 		}
 	}
-	ofLogNotice() << "Lives (Context): " << lives << " HUD: " << hud.lives;
+
+	// --- Win condition ---
+	if (_beacons.empty()) {
+		state = GameState::Win;
+		ofLogNotice() << "YOU WIN!";
+	}
 
 	cam.Update(this);
 	hud.Update(this);

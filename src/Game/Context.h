@@ -15,7 +15,6 @@
 
 class Context : public ofNode{
 
-
 public:
 
 	Context();
@@ -33,13 +32,21 @@ public:
 	Player * GetPlayer(void) { return player; }
 
 	vector<Beacon *> getBeacons(void) { return _beacons; }
+	
+	int GetLives() const { return lives; }
+
+	enum class GameState {
+		Playing,
+		GameOver,
+		Win
+	};
 
 private:
 	int asteroids;
 	int lives = 3;
 	uint64_t lastHitTime = 0;
 	const uint64_t hitCooldown = 5000; 
-	int GetLives() const { return lives; }
+	int beacons = 4;
 
 	ofNode body[500];
 	
@@ -54,5 +61,7 @@ private:
 	vector<Robot *> _robots;
 	vector<Beacon *> _beacons;
 	vector<PowerUp *> _powerups;
+
+	GameState state = GameState::Playing;
     
 };
