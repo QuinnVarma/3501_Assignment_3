@@ -36,6 +36,10 @@ public:
 
 private:
 	int asteroids;
+	int lives = 3;
+	uint64_t lastHitTime = 0;
+	const uint64_t hitCooldown = 5000; 
+	int GetLives() const { return lives; }
 
 	ofNode body[500];
 	

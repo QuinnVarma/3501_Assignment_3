@@ -1,4 +1,5 @@
 #include "ofApp.h"
+#include "Robot.h"
 
 ofApp::~ofApp() {
 	delete ct;

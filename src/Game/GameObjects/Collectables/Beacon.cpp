@@ -15,7 +15,7 @@ void Beacon::Update(Context * ct) {
 
 void Beacon::customDraw(void) {
 	ofSetColor(ofColor::blue);
-	ofDrawSphere({ 0, 0, 0 }, getRadius());
+	ofDrawSphere({ 0, 0, 0 }, getCollisionRadius());
 	ofSetColor(ofColor::white);
 }
 

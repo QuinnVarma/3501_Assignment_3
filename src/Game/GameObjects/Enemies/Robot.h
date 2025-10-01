@@ -1,9 +1,16 @@
 #pragma once
+#include "Enemy.h"
+#include "../Player.h"
 
-#include "ofMain.h"
-#include "../Enemy.cpp"
+class Robot : public Enemy {
+public:
+    Robot(glm::vec3 startPos);
 
-class Robot : public Enemy{
+    void Update(Context* ct) override;
+    void customDraw(void) override;
 
-    
+private:
+    float detectionRadius;
+    float speed;
 };
+

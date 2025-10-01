@@ -21,13 +21,11 @@ class GameObject : public ofNode {
 
 	protected:
 
-		inline float getRadius(void) const { return _radius; }
-		inline void setRadius(float radius) { _radius = radius; }
+		inline float getCollisionRadius(void) const { return _collisionRadius; }
+		inline float getObjectRadius(void) const { return _objectRadius; }
+		inline void setRadius(float radius) { _collisionRadius = radius; }
 
 		bool _should_remove = false;
-
-	private:
-		//collision radius
-		float _radius = 0;
-
+		float _collisionRadius;
+		float _objectRadius;
 };

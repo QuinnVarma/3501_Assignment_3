@@ -3,6 +3,8 @@
 #include "ofMain.h"
 #include "Game/MyCustomCamera.h"
 #include "Game/Context.h"
+#include "Game/GameObjects/Player.h"
+#include "Game/GameObjects/Enemies/Robot.h"
 
 class ofApp : public ofBaseApp{
 
