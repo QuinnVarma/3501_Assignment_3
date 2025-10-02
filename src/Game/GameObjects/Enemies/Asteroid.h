@@ -8,6 +8,4 @@ public:
     Asteroid();
 
     void customDraw(void) override;
-    void Update(Context* ct) override;
-
 };

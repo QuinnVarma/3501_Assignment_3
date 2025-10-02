@@ -23,19 +23,5 @@ void Robot::Update(Context* ct) {
 
 void Robot::customDraw(void) {
     ofSetColor(_color);
-    ofDrawSphere(0, 0, 0, _objectRadius);  // base sphere scaled
-}
-
-/*
-void Robot::customDraw(void) {
-    ofSetColor(_color);
-    ofDrawSphere(getPosition(), getCollisionRadius());
     ofDrawSphere(0, 0, 0, _objectRadius);
 }
-
-
-void Robot::draw() {
-    ofSetColor(color);
-    ofDrawSphere(position, radius);
-}
-*/

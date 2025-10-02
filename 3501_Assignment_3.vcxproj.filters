@@ -46,16 +46,16 @@
 			<UniqueIdentifier>{d8376475-7454-4a24-b08a-aac121d3ad6f}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="src\Game">
-			<UniqueIdentifier>{5BE50F40--A16-E-48-7A-A-A36-8A27F48B7239}</UniqueIdentifier>
+			<UniqueIdentifier>{C93BB105--5C5-3-4F-46-9-09D-C886D9BB5D58}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="src\Game\GameObjects">
-			<UniqueIdentifier>{3559FB23--9ED-3-46-11-8-3E7-3DB0E73CF220}</UniqueIdentifier>
+			<UniqueIdentifier>{55173DEF--322-C-40-33-8-D78-88D72CF1B5CC}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="src\Game\GameObjects\Collectables">
-			<UniqueIdentifier>{8F280650--20B-B-4F-79-A-56B-E320A69CD527}</UniqueIdentifier>
+			<UniqueIdentifier>{4261BA8F--B64-E-4C-41-9-4C0-407398838123}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="src\Game\GameObjects\Enemies">
-			<UniqueIdentifier>{6F561A29--B9E-D-4C-F8-9-914-E2CB8609B719}</UniqueIdentifier>
+			<UniqueIdentifier>{0E2002E8--4D2-4-41-0C-8-465-FF99A4682376}</UniqueIdentifier>
 		</Filter>
 	</ItemGroup>
 	<ItemGroup>

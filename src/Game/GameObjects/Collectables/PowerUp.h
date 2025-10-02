@@ -7,8 +7,7 @@ class PowerUp : public GameObject {
 public:
     PowerUp();
 
-    void Update(Context* ct) override;   // checks collision with player
-    void customDraw(void) override;     // draw pink sphere
+    void customDraw(void) override;
 private:
     ofColor _color;
 };
