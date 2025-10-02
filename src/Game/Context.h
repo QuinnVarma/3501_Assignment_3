@@ -28,15 +28,13 @@ public:
 	//getters and setters
 	int GetScore(void) { return score; }
 	void SetScore(int new_score) { score = new_score; }
-
 	Player * GetPlayer(void) { return player; }
-
 	vector<Beacon *> getBeacons(void) { return _beacons; }
-	
 	int GetLives() const { return lives; }
 	Beacon* getCurrentBeacon() const { return currentBeacon; }
 	vector<PowerUp*> getPowerUps() const { return _powerups; }
 
+	// Three posible game states
 	enum class GameState {
 		Playing,
 		GameOver,
@@ -44,12 +42,15 @@ public:
 	};
 
 private:
-	int asteroids;
+	int asteroids = 200;
 	int lives = 3;
-	uint64_t lastHitTime = 0;
-	const uint64_t hitCooldown = 5000; 
+	int timeLastHit = 0;
+	const int hitCooldown = 5000; 
 	int beacons = 4;
+	int extraPowerups = 10;
 	Beacon* currentBeacon = nullptr;
+	GameState state = GameState::Playing;
+	float cubeArea = 100.0f;
 
 	ofNode body[500];
 	
@@ -58,13 +59,9 @@ private:
 	int score = 0;
 
 	// GameObjects
-
 	Player * player;
 	vector<Asteroid *> _asteroids;
 	vector<Robot *> _robots;
 	vector<Beacon *> _beacons;
-	vector<PowerUp *> _powerups;
-
-	GameState state = GameState::Playing;
-    
+	vector<PowerUp *> _powerups;    
 };

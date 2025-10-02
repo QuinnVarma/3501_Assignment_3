@@ -15,9 +15,9 @@ Player::Player() {
 	maxSpeed = currentSpeed * 2;  // cap
 	accelRate = 100.0f;  // change per second
 	minSpeed = 0.0f;
-	minScale = 0.2f;   // can shrink to 1/5 size
-	maxScale = 3.0f;   // can grow to 3x size
-	scaleRate = 0.5f;   // change per second
+	minScale = 0.2f;   
+	maxScale = 3.0f; 
+	scaleRate = 0.5f; 
 	setScale(1.0f);     // default scale
 	baseSpeed = 0.5f;
 	MIN_SCALE = 0.5f;

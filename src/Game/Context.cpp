@@ -13,8 +13,7 @@ Context::~Context() {
 
 void Context::Setup(void) {
 	player = new Player();
-
-	asteroids = 200;
+	
 	for (int i = 0; i < asteroids; i++) {
 		Asteroid * as = new Asteroid();
 		as->setPosition({ ofRandom(-800, 800), ofRandom(-800, 800), ofRandom(-800, 800) });
@@ -31,30 +30,23 @@ void Context::Setup(void) {
 		int idx = ofRandom(0, _beacons.size());
 		currentBeacon = _beacons[idx];
 		currentBeacon->setColor(ofColor::yellow);
-		currentBeacon->setHighlighted(true);   // <-- make sure it knows it’s highlighted
+		currentBeacon->setHighlighted(true); 
 	}
-	/*
-	int robots = 10;
-	for (int i = 0; i < robots; i++) {
-		Robot* rb = new Robot(glm::vec3(ofRandom(-800, 800), ofRandom(-800, 800), ofRandom(-800, 800)));
-		_robots.push_back(rb);
-	}
-	*/
-	// For each beacon, create one power-up and one robot in a cube area around it
+
+	// For each beacon, create one power-up and one robot in a cubic area around it
 	for (Beacon* bc : _beacons) {
 		glm::vec3 beaconPos = bc->getPosition();
 
-		float padding = bc->getCollisionRadius() + 30.0f;  // keep clear of beacon
-		float range = 150.0f;                            // cube half-size
+		float extraSpace = bc->getCollisionRadius() + 30.0f;  //ensures the power ups and enemies don't clip inside the beacon 
 
-		// --- PowerUp position ---
-		float offsetX = ofRandom(-range, range);
-		float offsetY = 0.0f;  // flat on same plane as beacon, change if you want 3D scatter
-		float offsetZ = ofRandom(-range, range);
+		// positions of the power up
+		float offsetX = ofRandom(-cubeArea, cubeArea);
+		float offsetY = ofRandom(-cubeArea, cubeArea);
+		float offsetZ = ofRandom(-cubeArea, cubeArea);
 
 		// ensure it doesn't spawn inside the beacon
-		if (abs(offsetX) < padding) offsetX = (offsetX < 0 ? -padding : padding);
-		if (abs(offsetZ) < padding) offsetZ = (offsetZ < 0 ? -padding : padding);
+		if (abs(offsetX) < extraSpace) offsetX = (offsetX < 0 ? -extraSpace : extraSpace);
+		if (abs(offsetZ) < extraSpace) offsetZ = (offsetZ < 0 ? -extraSpace : extraSpace);
 
 		glm::vec3 powerUpPos = beaconPos + glm::vec3(offsetX, offsetY, offsetZ);
 
@@ -63,12 +55,12 @@ void Context::Setup(void) {
 		_powerups.push_back(pu);
 
 		// --- Robot position (separate random scatter in the same cube) ---
-		offsetX = ofRandom(-range, range);
+		offsetX = ofRandom(-cubeArea, cubeArea);
 		offsetY = 0.0f;  // keep them on ground plane
-		offsetZ = ofRandom(-range, range);
+		offsetZ = ofRandom(-cubeArea, cubeArea);
 
-		if (abs(offsetX) < padding) offsetX = (offsetX < 0 ? -padding : padding);
-		if (abs(offsetZ) < padding) offsetZ = (offsetZ < 0 ? -padding : padding);
+		if (abs(offsetX) < extraSpace) offsetX = (offsetX < 0 ? -extraSpace : extraSpace);
+		if (abs(offsetZ) < extraSpace) offsetZ = (offsetZ < 0 ? -extraSpace : extraSpace);
 
 		glm::vec3 robotPos = beaconPos + glm::vec3(offsetX, offsetY, offsetZ);
 
@@ -76,8 +68,7 @@ void Context::Setup(void) {
 		_robots.push_back(rb);
 	}
 
-	// add a few random power-ups
-	int extraPowerups = 10; // tweak as you like
+	// Add powerups scattered across the world 
 	for (int i = 0; i < extraPowerups; i++) {
 		PowerUp* pu = new PowerUp();
 		pu->setPosition({
@@ -112,19 +103,19 @@ void Context::customDraw(void) {
 	for (PowerUp* pu : _powerups)
 		pu->draw();
 
-	ofPopMatrix(); // restore scaling
+	ofPopMatrix();
 
 	cam.end();
 	hud.customDraw();
 
-	// --- Show win/lose messages ---
+	// show "Game Over" if you are dead or "You Win!" if are in winner stat
 	if (state == GameState::GameOver) {
 		ofSetColor(ofColor::red);
-		ofDrawBitmapString("GAME OVER", ofGetWidth() / 2 - 40, ofGetHeight() / 2);
+		ofDrawBitmapString("Game Over", ofGetWidth() / 2 - 40, ofGetHeight() / 2);
 	}
 	else if (state == GameState::Win) {
 		ofSetColor(ofColor::green);
-		ofDrawBitmapString("YOU WIN!", ofGetWidth() / 2 - 40, ofGetHeight() / 2);
+		ofDrawBitmapString("You Win!", ofGetWidth() / 2 - 40, ofGetHeight() / 2);
 	}
 }
 
@@ -150,7 +141,7 @@ void Context::Update(void) {
 	// --- Collision detection with cooldown ---
 	uint64_t now = ofGetElapsedTimeMillis();
 
-	if (now - lastHitTime > hitCooldown) {
+	if (now - timeLastHit > hitCooldown) {
 		bool wasHit = false;
 
 		// check robots
@@ -174,7 +165,7 @@ void Context::Update(void) {
 		// apply damage
 		if (wasHit) {
 			lives--;
-			lastHitTime = now;
+			timeLastHit = now;
 			hud.lives = lives;
 			ofLogNotice() << "Player hit! Lives left: " << lives;
 
@@ -185,7 +176,7 @@ void Context::Update(void) {
 		}
 	}
 
-	// --- Beacon collection (ONLY highlighted one) ---
+	// Beacon collection (one is highlighted)
 	if (currentBeacon && player->DoesCollide(currentBeacon)) {
 		currentBeacon->setRemove();
 		_beacons.erase(std::remove(_beacons.begin(), _beacons.end(), currentBeacon), _beacons.end());
