@@ -90,24 +90,29 @@ void Context::Setup(void) {
 
 
 }
-
 void Context::customDraw(void) {
 	cam.begin();
 
+	// Scale the world inversely to the player
+	float playerScale = player->getScale();
+
+	ofPushMatrix();
+	ofScale(1.0f / playerScale, 1.0f / playerScale, 1.0f / playerScale);
+
+	// Draw all world objects
 	for (Asteroid* as : _asteroids)
 		as->draw();
 
-	for (Beacon* bc : _beacons) {
+	for (Beacon* bc : _beacons)
 		bc->draw();
-	}
 
-	for (Robot* rb : _robots) {
+	for (Robot* rb : _robots)
 		rb->draw();
-	}
 
-	for (PowerUp* pu : _powerups) {
+	for (PowerUp* pu : _powerups)
 		pu->draw();
-	}
+
+	ofPopMatrix(); // restore scaling
 
 	cam.end();
 	hud.customDraw();
@@ -122,6 +127,8 @@ void Context::customDraw(void) {
 		ofDrawBitmapString("YOU WIN!", ofGetWidth() / 2 - 40, ofGetHeight() / 2);
 	}
 }
+
+
 
 void Context::Update(void) {
 

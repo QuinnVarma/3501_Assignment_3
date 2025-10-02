@@ -14,7 +14,7 @@ Player::Player() {
 	_collisionRadius = 30.00f; //collision radius of the player
 	maxSpeed = currentSpeed * 2;  // cap
 	accelRate = 100.0f;  // change per second
-	minSpeed = 50.0f;
+	minSpeed = 0.0f;
 	minScale = 0.2f;   // can shrink to 1/5 size
 	maxScale = 3.0f;   // can grow to 3x size
 	scaleRate = 0.5f;   // change per second
@@ -23,6 +23,7 @@ Player::Player() {
 	MIN_SCALE = 0.5f;
 	MAX_SCALE = 2.5f;
 	SCALE_STEP = 0.01f;
+	baseCollisionRadius = 30.00f;
 
 	setRadius(10);
 }
@@ -48,21 +49,28 @@ void Player::HandleControls(void) {
 		if (currentSpeed < minSpeed) currentSpeed = minSpeed; 
 	}
 
-	// grow with "="
+	// Grow
 	if (ofGetKeyPressed('=')) {
 		float newScale = std::min(MAX_SCALE, getScale() + SCALE_STEP);
 		setScale(newScale);
+
+		// Update collision radius based on scale
+		_collisionRadius = baseCollisionRadius * newScale;
 	}
 
-	// shrink with "-"
+	// Shrink
 	if (ofGetKeyPressed('-')) {
 		float newScale = std::max(MIN_SCALE, getScale() - SCALE_STEP);
 		setScale(newScale);
+
+		// Update collision radius based on scale
+		_collisionRadius = baseCollisionRadius * newScale;
 	}
 
 	// --- Always move forward at currentSpeed ---
 	glm::vec3 forward = getLookAtDir();
-	setPosition(getPosition() + forward * (currentSpeed * ofGetLastFrameTime()));
+	float scaledSpeed = currentSpeed * getScale(); // no scale factor here
+	setPosition(getPosition() + forward * (scaledSpeed * dt));
 
 	// --- Rotations (yaw, pitch, roll) ---
 	float rotationamt = rotationSpeed * dt;

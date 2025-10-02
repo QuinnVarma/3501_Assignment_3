@@ -7,10 +7,7 @@ Beacon::Beacon() {
 	_collisionRadius = 30.00f;
 }
 
-void Beacon::Update(Context* ct) {
-	//TODO, handle collisions here instead of in context
-}
-
+// Draws a yellow square if the beacon is the current goal and the other beacons are white spheres
 void Beacon::customDraw(void) {
 
     ofSetColor(_color);
@@ -22,13 +19,4 @@ void Beacon::customDraw(void) {
 		ofDrawSphere(0, 0, 0, _collisionRadius);
 	}
 }
-
-
-/*
-void Beacon::customDraw(void) {
-	ofSetColor(_color);
-	ofDrawSphere({ 0, 0, 0 }, getCollisionRadius());
-	ofSetColor(ofColor::white); 
-}
-*/
 

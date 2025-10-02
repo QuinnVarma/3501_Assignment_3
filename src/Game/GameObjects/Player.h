@@ -33,6 +33,7 @@ private:
 	float MIN_SCALE;
 	float MAX_SCALE;
 	float SCALE_STEP;
+	float baseCollisionRadius;
 
 	glm::vec3 velocity;
 	glm::quat orientation;

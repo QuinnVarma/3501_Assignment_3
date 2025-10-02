@@ -3,7 +3,7 @@
 
 Asteroid::Asteroid() : Enemy(10.0f) {
     _color = ofColor::red; 
-    _objectRadius = 10.00f;
+    _objectRadius = 50.00f;
     _collisionRadius = 30.00f;
 }
 
