@@ -30,14 +30,65 @@ void Context::Setup(void) {
 	if (!_beacons.empty()) {
 		int idx = ofRandom(0, _beacons.size());
 		currentBeacon = _beacons[idx];
-		currentBeacon->setColor(ofColor::yellow);  // highlight
+		currentBeacon->setColor(ofColor::yellow);
+		currentBeacon->setHighlighted(true);   // <-- make sure it knows it’s highlighted
 	}
-
+	/*
 	int robots = 10;
 	for (int i = 0; i < robots; i++) {
 		Robot* rb = new Robot(glm::vec3(ofRandom(-800, 800), ofRandom(-800, 800), ofRandom(-800, 800)));
 		_robots.push_back(rb);
 	}
+	*/
+	// For each beacon, create one power-up and one robot in a cube area around it
+	for (Beacon* bc : _beacons) {
+		glm::vec3 beaconPos = bc->getPosition();
+
+		float padding = bc->getCollisionRadius() + 30.0f;  // keep clear of beacon
+		float range = 150.0f;                            // cube half-size
+
+		// --- PowerUp position ---
+		float offsetX = ofRandom(-range, range);
+		float offsetY = 0.0f;  // flat on same plane as beacon, change if you want 3D scatter
+		float offsetZ = ofRandom(-range, range);
+
+		// ensure it doesn't spawn inside the beacon
+		if (abs(offsetX) < padding) offsetX = (offsetX < 0 ? -padding : padding);
+		if (abs(offsetZ) < padding) offsetZ = (offsetZ < 0 ? -padding : padding);
+
+		glm::vec3 powerUpPos = beaconPos + glm::vec3(offsetX, offsetY, offsetZ);
+
+		PowerUp* pu = new PowerUp();
+		pu->setPosition(powerUpPos);
+		_powerups.push_back(pu);
+
+		// --- Robot position (separate random scatter in the same cube) ---
+		offsetX = ofRandom(-range, range);
+		offsetY = 0.0f;  // keep them on ground plane
+		offsetZ = ofRandom(-range, range);
+
+		if (abs(offsetX) < padding) offsetX = (offsetX < 0 ? -padding : padding);
+		if (abs(offsetZ) < padding) offsetZ = (offsetZ < 0 ? -padding : padding);
+
+		glm::vec3 robotPos = beaconPos + glm::vec3(offsetX, offsetY, offsetZ);
+
+		Robot* rb = new Robot(robotPos);
+		_robots.push_back(rb);
+	}
+
+	// add a few random power-ups
+	int extraPowerups = 10; // tweak as you like
+	for (int i = 0; i < extraPowerups; i++) {
+		PowerUp* pu = new PowerUp();
+		pu->setPosition({
+			ofRandom(-800, 800),
+			ofRandom(-800, 800),
+			ofRandom(-800, 800)
+			});
+		_powerups.push_back(pu);
+	}
+
+
 }
 
 void Context::customDraw(void) {
@@ -52,6 +103,10 @@ void Context::customDraw(void) {
 
 	for (Robot* rb : _robots) {
 		rb->draw();
+	}
+
+	for (PowerUp* pu : _powerups) {
+		pu->draw();
 	}
 
 	cam.end();
@@ -132,18 +187,34 @@ void Context::Update(void) {
 			int idx = ofRandom(0, (int)_beacons.size());
 			currentBeacon = _beacons[idx];
 			currentBeacon->setColor(ofColor::yellow);
+			currentBeacon->setHighlighted(true);
 		}
 		else {
-			currentBeacon = nullptr;
 			state = GameState::Win;
-			ofLogNotice() << "YOU WIN!";
 		}
 	}
 
-	// --- Keep non-highlighted beacons white ---
+	// reset highlight on others
 	for (Beacon* bc : _beacons) {
 		if (bc != currentBeacon) {
 			bc->setColor(ofColor::white);
+			bc->setHighlighted(false);
+		}
+	}
+
+
+	// --- Power-up collection ---
+	for (int i = 0; i < _powerups.size();) {
+		if (player->DoesCollide(_powerups[i])) {
+			// Boost player's speed
+			player->increaseMaxSpeed();
+
+			// remove consumed powerup
+			_powerups.erase(_powerups.begin() + i);
+			ofLogNotice() << "Power-up collected! Speed boosted!";
+		}
+		else {
+			i++;
 		}
 	}
 

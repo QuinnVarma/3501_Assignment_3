@@ -23,8 +23,9 @@ void Robot::Update(Context* ct) {
 
 void Robot::customDraw(void) {
     ofSetColor(_color);
-    ofDrawSphere(0, 0, 0, _objectRadius);   // draw at local origin
+    ofDrawSphere(0, 0, 0, _objectRadius);  // base sphere scaled
 }
+
 /*
 void Robot::customDraw(void) {
     ofSetColor(_color);

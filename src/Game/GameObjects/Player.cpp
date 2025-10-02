@@ -3,9 +3,8 @@
 
 
 Player::Player() {
-	movementSpeed = 100.0f; // units per second
+	currentSpeed = 100.0f; // units per second
 	rotationSpeed = 0.35f; // rads per second
-	position = glm::vec3(0, 0, 0);
 	velocity = glm::vec3(0, 0, 0);
 	orientation = glm::quat(1, 0, 0, 0); // nothing
 
@@ -13,6 +12,17 @@ Player::Player() {
 	BASE_UP = glm::vec3(0, 1, 0);
 	BASE_FORWARD = glm::vec3(0, 0, 1); // don't need to store all three, note
 	_collisionRadius = 30.00f; //collision radius of the player
+	maxSpeed = currentSpeed * 2;  // cap
+	accelRate = 100.0f;  // change per second
+	minSpeed = 50.0f;
+	minScale = 0.2f;   // can shrink to 1/5 size
+	maxScale = 3.0f;   // can grow to 3x size
+	scaleRate = 0.5f;   // change per second
+	setScale(1.0f);     // default scale
+	baseSpeed = 0.5f;
+	MIN_SCALE = 0.5f;
+	MAX_SCALE = 2.5f;
+	SCALE_STEP = 0.01f;
 
 	setRadius(10);
 }
@@ -20,42 +30,51 @@ Player::Player() {
 
 
 void Player::Update(Context* ct) {
-	velocity = glm::vec3(0, 0, 0);
-
 	HandleControls();
-
-	// need to set ofCamera parameters using internal position, orientation
-	setPosition(position);
 	setOrientation(orientation);
 }
 
-void Player::HandleControls(void) {
-	// WASD movement
-	if (ofGetKeyPressed('w')) velocity += getqForward();
-	if (ofGetKeyPressed('s')) velocity -= getqForward();
-	if (ofGetKeyPressed('a')) velocity -= getqSide();
-	if (ofGetKeyPressed('d')) velocity += getqSide();
-	if (ofGetKeyPressed('q')) velocity += getqUp();
-	if (ofGetKeyPressed('e')) velocity -= getqUp();
 
-	if (glm::length(velocity) > 0.0f) // did it move at all?
-	{
-		velocity = glm::normalize(velocity) * movementSpeed * ofGetLastFrameTime();
-		position = position + velocity;
+void Player::HandleControls(void) {
+	float dt = ofGetLastFrameTime();
+
+	// --- Speed control ---
+	if (ofGetKeyPressed('w')) {
+		currentSpeed += accelRate * dt;
+		if (currentSpeed > maxSpeed) currentSpeed = maxSpeed;
+	}
+	if (ofGetKeyPressed('s')) {
+		currentSpeed -= accelRate * dt;
+		if (currentSpeed < minSpeed) currentSpeed = minSpeed; 
 	}
 
-	float rotationamt = rotationSpeed * ofGetLastFrameTime();
+	// grow with "="
+	if (ofGetKeyPressed('=')) {
+		float newScale = std::min(MAX_SCALE, getScale() + SCALE_STEP);
+		setScale(newScale);
+	}
 
-	// IJKL rotation
+	// shrink with "-"
+	if (ofGetKeyPressed('-')) {
+		float newScale = std::max(MIN_SCALE, getScale() - SCALE_STEP);
+		setScale(newScale);
+	}
+
+	// --- Always move forward at currentSpeed ---
+	glm::vec3 forward = getLookAtDir();
+	setPosition(getPosition() + forward * (currentSpeed * ofGetLastFrameTime()));
+
+	// --- Rotations (yaw, pitch, roll) ---
+	float rotationamt = rotationSpeed * dt;
 	if (ofGetKeyPressed('i')) pitch(rotationamt);
 	if (ofGetKeyPressed('k')) pitch(-rotationamt);
 	if (ofGetKeyPressed('j')) yaw(rotationamt);
 	if (ofGetKeyPressed('l')) yaw(-rotationamt);
 	if (ofGetKeyPressed('o')) roll(rotationamt);
 	if (ofGetKeyPressed('u')) roll(-rotationamt);
-	orientation = orientation / length(orientation); // normalize
-}
 
+	orientation = glm::normalize(orientation);
+}
 
 void Player::pitch(float amt) {
 	glm::quat change = glm::angleAxis(amt, getqSide());

@@ -14,5 +14,4 @@ void PowerUp::Update(Context* ct) {
 void PowerUp::customDraw(void) {
     ofSetColor(_color);
     ofDrawSphere({ 0, 0, 0 }, getCollisionRadius());
-    ofSetColor(ofColor::white);
 }

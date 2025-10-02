@@ -8,7 +8,7 @@ public:
 	Player();
 
 	void Update(Context* ct) override;
-
+	void increaseMaxSpeed() { currentSpeed += 100.0f; }  // permanent boost
 
 	void HandleControls(void);
 
@@ -21,10 +21,20 @@ public:
 	void yaw(float a);
 
 private:
-	float movementSpeed;
+	float maxSpeed;       // maximum speed
+	float accelRate;      // how much speed changes per second
+	float currentSpeed;
 	float rotationSpeed;
+	float minSpeed;
+	float minScale;       // smallest size
+	float maxScale;       // largest size
+	float scaleRate;      // how fast scaling changes
+	float baseSpeed;
+	float MIN_SCALE;
+	float MAX_SCALE;
+	float SCALE_STEP;
+
 	glm::vec3 velocity;
-	glm::vec3 position;
 	glm::quat orientation;
 
 	glm::vec3 BASE_UP;

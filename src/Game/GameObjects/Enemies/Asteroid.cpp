@@ -13,6 +13,6 @@ void Asteroid::Update(Context* ct) {
 
 void Asteroid::customDraw(void) {
     ofSetColor(_color);
-    ofDrawBox(0, 0, 0, _objectRadius);
+    ofDrawBox(0, 0, 0, _collisionRadius);  // base cube scaled
 }
 

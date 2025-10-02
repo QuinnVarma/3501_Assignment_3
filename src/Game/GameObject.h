@@ -18,6 +18,9 @@ class GameObject : public ofNode {
 
 		bool getShouldRemove(void) { return _should_remove; }
 		void setRemove(void) { _should_remove = true; }
+		float getScale() const { return _scale; }
+		void setScale(float scale) { _scale = scale; }
+
 
 	protected:
 
@@ -28,4 +31,6 @@ class GameObject : public ofNode {
 		bool _should_remove = false;
 		float _collisionRadius;
 		float _objectRadius;
+		float _scale;
+
 };

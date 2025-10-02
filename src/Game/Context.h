@@ -35,6 +35,7 @@ public:
 	
 	int GetLives() const { return lives; }
 	Beacon* getCurrentBeacon() const { return currentBeacon; }
+	vector<PowerUp*> getPowerUps() const { return _powerups; }
 
 	enum class GameState {
 		Playing,
