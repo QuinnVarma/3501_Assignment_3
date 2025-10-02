@@ -7,8 +7,7 @@ public:
     Enemy(float radius = 10.0f);
     virtual ~Enemy() = default;
 
-    // All enemies must override Update and customDraw
-    virtual void Update(Context* ct) override = 0;
+    // All enemies must override customDraw
     virtual void customDraw(void) override = 0;
 
 protected:
